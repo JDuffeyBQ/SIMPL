@@ -384,7 +384,10 @@ option(SIMPL_USE_ITK "Use ITK For Image Processing" ON)
 # -----------------------------------------------------------------------
 # Add in the Necessary HDF5 Support Sources into a library
 # -----------------------------------------------------------------------
-add_subdirectory( ${SIMPLProj_SOURCE_DIR}/Source/H5Support ${PROJECT_BINARY_DIR}/H5Support)
+find_package(H5Support REQUIRED)
+
+include(${CMP_SOURCE_DIR}/ExtLib/H5Support.cmake)
+CMP_FindH5Support(COPY INSTALL)
 
 # -----------------------------------------------------------------------
 # Add in the support to host the documentation over a thin-http server

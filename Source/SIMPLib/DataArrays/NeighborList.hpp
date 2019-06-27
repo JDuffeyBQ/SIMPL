@@ -661,7 +661,7 @@ class NeighborList : public IDataArray
         // The NumNeighbors array is in the dream3d file so read it up into memory and compare with what
         // we have in memory.
         std::vector<int32_t> fileNumNeigh(m_Array.size());
-        err = QH5Lite::readVectorDataset(parentId, m_NumNeighborsArrayName, fileNumNeigh);
+        err = H5Lite::readVectorDataset(parentId, m_NumNeighborsArrayName.toStdString(), fileNumNeigh);
         if (err < 0)
         {
           return -602;
@@ -825,7 +825,7 @@ class NeighborList : public IDataArray
       int err = 0;
 
       std::vector<T> flat;
-      err = QH5Lite::readVectorDataset(parentId, getName(), flat);
+      err = H5Lite::readVectorDataset(parentId, getName().toStdString(), flat);
       if(err < 0)
       {
         return err;
@@ -844,7 +844,7 @@ class NeighborList : public IDataArray
       // Check to see if the NumNeighbors exists in the file, which it must.
       if(QH5Lite::datasetExists(parentId, m_NumNeighborsArrayName))
       {
-        err = QH5Lite::readVectorDataset(parentId, m_NumNeighborsArrayName, numNeighbors);
+        err = H5Lite::readVectorDataset(parentId, m_NumNeighborsArrayName.toStdString(), numNeighbors);
         if(err < 0)
         {
           return -702;

@@ -151,7 +151,7 @@ public:
     else
     {
       std::vector<uint8_t> buffer;
-      err = QH5Lite::readVectorDataset(parentId, dynamicListName, buffer);
+      err = H5Lite::readVectorDataset(parentId, dynamicListName.toStdString(), buffer);
       if(err < 0)
       {
         return dynamicList = DynamicListArray<T, K>::NullPointer();

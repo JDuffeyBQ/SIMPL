@@ -86,7 +86,7 @@ AddSIMPLUnitTest(TESTNAME FilterParameterCallbackExample
                   FOLDER 
                     "DREAM3D UnitTests"
                   LINK_LIBRARIES 
-                    Qt5::Core H5Support SIMPLib  
+                    Qt5::Core H5Support::H5Support SIMPLib  
                   INCLUDE_DIRS
                     ${SIMPLTools_BINARY_DIR}
                     ${SIMPLProj_SOURCE_DIR}/Source

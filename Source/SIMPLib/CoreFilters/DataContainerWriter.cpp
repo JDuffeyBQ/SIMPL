@@ -216,7 +216,7 @@ void DataContainerWriter::execute()
     return;
   }
   hid_t dcaGid = H5Gopen(m_FileId, SIMPL::StringConstants::DataContainerGroupName.toLatin1().data(), H5P_DEFAULT);
-  scopedFileSentinel.addGroupId(&dcaGid);
+  scopedFileSentinel.addGroupID(&dcaGid);
 
   QList<QString> dcNames = getDataContainerArray()->getDataContainerNames();
   for(int iter = 0; iter < getDataContainerArray()->getNumDataContainers(); iter++)
@@ -306,7 +306,7 @@ int DataContainerWriter::writeDataContainerBundles(hid_t fileId)
   }
   hid_t dcbGid = H5Gopen(m_FileId, SIMPL::StringConstants::DataContainerBundleGroupName.toLatin1().data(), H5P_DEFAULT);
 
-  H5GroupAutoCloser groupCloser(&dcbGid);
+  H5ScopedGroupSentinel groupCloser(&dcbGid, false);
 
   QMap<QString, IDataContainerBundle::Pointer>& bundles = getDataContainerArray()->getDataContainerBundles();
   QMapIterator<QString, IDataContainerBundle::Pointer> iter(bundles);

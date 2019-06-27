@@ -197,7 +197,7 @@ public:
 
     // Create the Pointer group
     hid_t ptrId = QH5Utilities::createGroup(file_id, "Pointer");
-    sentinel.addGroupId(&ptrId);
+    sentinel.addGroupID(&ptrId);
     DREAM3D_REQUIRED(ptrId, >, 0);
 
     DREAM3D_REQUIRE(writePointer1DArrayDataset<int8_t>(ptrId) >= 0);

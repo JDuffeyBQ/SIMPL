@@ -118,18 +118,18 @@ void DataArrayProxy::ReadDataArrayStructure(hid_t attrMatGid, QMap<QString, Data
 {
 
   QList<QString> dataArrayNames;
-  QH5Utilities::getGroupObjects(attrMatGid, H5Utilities::H5Support_DATASET | H5Utilities::H5Support_GROUP, dataArrayNames);
+  QH5Utilities::getGroupObjects(attrMatGid, static_cast<int32_t>(H5Utilities::CustomHDFDataTypes::Dataset) | static_cast<int32_t>(H5Utilities::CustomHDFDataTypes::Group), dataArrayNames);
   for(const auto& dataArrayName : dataArrayNames)
   {
     DataArrayProxy proxy(h5InternalPath, dataArrayName, SIMPL::Unchecked);
 
-    herr_t err = QH5Lite::readVectorAttribute(attrMatGid, dataArrayName, SIMPL::HDF5::TupleDimensions, proxy.m_TupleDims);
+    herr_t err = H5Lite::readVectorAttribute(attrMatGid, dataArrayName.toStdString(), SIMPL::HDF5::TupleDimensions.toStdString(), proxy.m_TupleDims);
     if(err < 0)
     {
       std::cout << "Error Reading the Tuple Dimensions for DataArray " << dataArrayName.toStdString() << std::endl;
     }
 
-    err = QH5Lite::readVectorAttribute(attrMatGid, dataArrayName, SIMPL::HDF5::ComponentDimensions, proxy.m_CompDims);
+    err = H5Lite::readVectorAttribute(attrMatGid, dataArrayName.toStdString(), SIMPL::HDF5::ComponentDimensions.toStdString(), proxy.m_CompDims);
     if(err < 0)
     {
       std::cout << "Error Reading the Component Dimensions for DataArray " << dataArrayName.toStdString() << std::endl;

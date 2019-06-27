@@ -291,7 +291,7 @@ bool SIMPLH5DataReader::readDataContainerBundles(hid_t fileId, const DataContain
   H5ScopedGroupSentinel sentinel(&dcbGroupId, false);
 
   QList<QString> groupNames;
-  err = QH5Utilities::getGroupObjects(dcbGroupId, H5Utilities::H5Support_GROUP, groupNames);
+  err = QH5Utilities::getGroupObjects(dcbGroupId, static_cast<int32_t>(H5Utilities::CustomHDFDataTypes::Group), groupNames);
   if(err < 0)
   {
     QString ss = QObject::tr("Error getting group objects from HDF5 group '%1' ").arg(SIMPL::StringConstants::DataContainerBundleGroupName);
@@ -307,7 +307,7 @@ bool SIMPLH5DataReader::readDataContainerBundles(hid_t fileId, const DataContain
     DataContainerBundle::Pointer bundle = DataContainerBundle::New(bundleName);
 
     hid_t bundleId = H5Gopen(dcbGroupId, bundleName.toLatin1().constData(), H5P_DEFAULT);
-    sentinel.addGroupId(&bundleId); // Make sure this group gets closed
+    sentinel.addGroupID(&bundleId); // Make sure this group gets closed
 
     // Read in the Data Container Names
     QString dcNames;

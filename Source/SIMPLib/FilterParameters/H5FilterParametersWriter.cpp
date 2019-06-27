@@ -131,7 +131,7 @@ int H5FilterParametersWriter::writePipelineToFile(FilterPipeline::Pointer pipeli
   QH5Lite::writeStringAttribute(fileId, "/", SIMPL::HDF5::DREAM3DVersion, SIMPLib::Version::Complete());
 
   hid_t pipelineGroupId = QH5Utilities::createGroup(fileId, SIMPL::StringConstants::PipelineGroupName);
-  scopedFileSentinel.addGroupId(&pipelineGroupId);
+  scopedFileSentinel.addGroupID(&pipelineGroupId);
   setGroupId(pipelineGroupId);
 
   QH5Lite::writeScalarAttribute(pipelineGroupId, "/" + SIMPL::StringConstants::PipelineGroupName, SIMPL::StringConstants::PipelineVersionName, 2);

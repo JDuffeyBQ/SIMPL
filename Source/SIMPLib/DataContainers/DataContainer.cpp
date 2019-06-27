@@ -115,7 +115,7 @@ DataContainer::Pointer DataContainer::createNewDataContainer(const QString& name
 void DataContainer::ReadDataContainerStructure(hid_t dcArrayGroupId, DataContainerArrayProxy& proxy, SIMPLH5DataReaderRequirements* req, const QString& h5InternalPath)
 {
   QList<QString> dataContainers;
-  QH5Utilities::getGroupObjects(dcArrayGroupId, H5Utilities::H5Support_GROUP, dataContainers);
+  QH5Utilities::getGroupObjects(dcArrayGroupId, static_cast<int32_t>(H5Utilities::CustomHDFDataTypes::Group), dataContainers);
   foreach(QString dataContainerName, dataContainers)
   {
     hid_t containerGid = H5Gopen(dcArrayGroupId, dataContainerName.toLatin1().constData(), H5P_DEFAULT);
@@ -296,7 +296,7 @@ int DataContainer::readAttributeMatricesFromHDF5(bool preflight, hid_t dcGid, Da
       return -1;
     }
 
-    err = QH5Lite::readVectorAttribute(dcGid, amName, SIMPL::HDF5::TupleDimensions, tDims);
+    err = H5Lite::readVectorAttribute(dcGid, amName.toStdString(), SIMPL::HDF5::TupleDimensions.toStdString(), tDims);
     if(err < 0)
     {
       return -1;

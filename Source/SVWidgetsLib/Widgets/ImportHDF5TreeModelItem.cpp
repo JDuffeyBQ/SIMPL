@@ -32,7 +32,9 @@
 
 #include "ImportHDF5TreeModelItem.h"
 
+#include <iostream>
 
+#include "H5Support/H5Lite.h"
 #include "H5Support/H5Utilities.h"
 
 ImportHDF5TreeModelItem::ImportHDF5TreeModelItem(hid_t fileId, const QString& data, ImportHDF5TreeModelItem* parent)
@@ -300,7 +302,7 @@ void ImportHDF5TreeModelItem::initializeChildItems()
     m_NumAttrs = object_info.num_attrs;
 
     std::list<std::string> itemList;
-    herr_t err = H5Utilities::getGroupObjects(groupId, H5Utilities::H5Support_ANY, itemList);
+    herr_t err = H5Utilities::getGroupObjects(groupId, static_cast<int32_t>(H5Utilities::CustomHDFDataTypes::Any), itemList);
     if(err < 0)
     {
       std::cout << "Error getting group objects. " << __FILE__ << ":" << __LINE__ << std::endl;

@@ -101,7 +101,7 @@ int H5DataArrayReader::ReadRequiredAttributes(hid_t gid, const QString& name, QS
   }
 
   // Read the tuple dimensions as an attribute
-  err = QH5Lite::readVectorAttribute(gid, name, SIMPL::HDF5::TupleDimensions, tDims);
+  err = H5Lite::readVectorAttribute(gid, name.toStdString(), SIMPL::HDF5::TupleDimensions.toStdString(), tDims);
   if(err < 0)
   {
     retErr = err;
@@ -109,7 +109,7 @@ int H5DataArrayReader::ReadRequiredAttributes(hid_t gid, const QString& name, QS
   }
 
   // Read the component dimensions as  an attribute
-  err = QH5Lite::readVectorAttribute(gid, name, SIMPL::HDF5::ComponentDimensions, cDims);
+  err = H5Lite::readVectorAttribute(gid, name.toStdString(), SIMPL::HDF5::ComponentDimensions.toStdString(), cDims);
   if(err < 0)
   {
     retErr = err;

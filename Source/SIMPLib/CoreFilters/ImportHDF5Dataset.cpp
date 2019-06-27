@@ -182,7 +182,7 @@ void ImportHDF5Dataset::dataCheck()
       if(!openedParentPathsMap.contains(parentPath))
       {
         parentId = QH5Utilities::openHDF5Object(fileId, parentPath);
-        sentinel.addGroupId(&parentId);
+        sentinel.addGroupID(&parentId);
         openedParentPathsMap.insert(parentPath, parentId);
       }
       else

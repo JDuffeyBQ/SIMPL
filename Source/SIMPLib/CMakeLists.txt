@@ -173,7 +173,7 @@ cmpReplaceFileIfDifferent(OLD_FILE_PATH  ${SIMPLib_BINARY_DIR}/CoreFilters/Regis
                           NEW_FILE_PATH  ${RegisterKnownFiltersFile} )
 
 
-set(${PROJECT_NAME}_LINK_LIBS Qt5::Core Qt5::Network H5Support)
+set(${PROJECT_NAME}_LINK_LIBS Qt5::Core Qt5::Network H5Support::H5Support)
 if( "${SIMPL_USE_MULTITHREADED_ALGOS}" STREQUAL "ON")
   list(APPEND ${PROJECT_NAME}_LINK_LIBS TBB::tbb TBB::tbbmalloc)
 endif()
