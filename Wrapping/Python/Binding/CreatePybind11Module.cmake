@@ -72,9 +72,15 @@ function(CreatePybind11Module)
 
   set(PYTHON_UNIT_TEST_NAME PY_${ARGS_MODULE_NAME}_UnitTest)
 
-  add_test(NAME ${PYTHON_UNIT_TEST_NAME}
-    COMMAND ${PYTHON_EXECUTABLE} ${PYTHON_UNIT_TEST_FILE}
-  )
+  if(SIMPL_ANACONDA_PYTHON)
+    add_test(NAME ${PYTHON_UNIT_TEST_NAME}
+      COMMAND ${SIMPL_CONDA_EXECUTABLE} "activate" ${ANACONDA_ENVIRONMENT_NAME} "&&" "python" ${PYTHON_UNIT_TEST_FILE}
+    )
+  else()
+    add_test(NAME ${PYTHON_UNIT_TEST_NAME}
+      COMMAND ${PYTHON_EXECUTABLE} ${PYTHON_UNIT_TEST_FILE}
+    )
+  endif()
 
   set_tests_properties(${PYTHON_UNIT_TEST_NAME}
     PROPERTIES
@@ -126,9 +132,17 @@ function(CreatePythonTests)
   foreach(test ${ARGS_TEST_NAMES})
     string(REPLACE "/" "_" test_name ${test})
     set(PY_TEST_NAME ${ARGS_PREFIX}_${test_name})
-    add_test(NAME ${PY_TEST_NAME}
-      COMMAND ${PYTHON_EXECUTABLE} "${ARGS_INPUT_DIR}/${test}.py"
-    )
+
+    if(SIMPL_ANACONDA_PYTHON)
+      add_test(NAME ${PY_TEST_NAME}
+        COMMAND ${SIMPL_CONDA_EXECUTABLE} "activate" ${ANACONDA_ENVIRONMENT_NAME} "&&" "python" ${ARGS_INPUT_DIR}/${test}.py
+      )
+    else()
+      add_test(NAME ${PY_TEST_NAME}
+        COMMAND ${PYTHON_EXECUTABLE} ${ARGS_INPUT_DIR}/${test}.py
+      )
+    endif()
+
     set_tests_properties(${PY_TEST_NAME}
       PROPERTIES
         ENVIRONMENT "PYTHONPATH=${TESTS_PYTHONPATH}"
