@@ -11,7 +11,7 @@ function(AddPythonTest)
       )
     else()
       add_test(NAME ${ARGS_NAME}
-        COMMAND ${SIMPLProj_SOURCE_DIR}/Wrapping/Python/Binding/anaconda_setup.sh "&&" "python" ${ARGS_FILE}
+        COMMAND ${SIMPLProj_SOURCE_DIR}/Wrapping/Python/Binding/anaconda_test.sh
       )
 
       set_property(TEST ${ARGS_NAME}
@@ -19,6 +19,7 @@ function(AddPythonTest)
           ENVIRONMENT
             "SIMPL_ANACONDA_DIR=${ANACONDA_DIR}"
             "SIMPL_CONDA_ENV=${ANACONDA_ENVIRONMENT_NAME}"
+            "PYTHON_TEST_FILE=${ARGS_FILE}"
       )
     endif()
   else()
