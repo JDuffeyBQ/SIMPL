@@ -68,7 +68,6 @@ function(CreatePybind11Module)
   set(PYTHON_UNIT_TEST_FILE ${ARGS_PYTHON_OUTPUT_DIR}/${ARGS_MODULE_NAME}_UnitTest.py)
 
   file(MAKE_DIRECTORY ${ARGS_OUTPUT_DIR})
-  file(MAKE_DIRECTORY ${ARGS_PYTHON_OUTPUT_DIR})
 
   set(PY_GENERATOR ${SIMPLProj_SOURCE_DIR}/Wrapping/Python/Binding/generate_python_bindings.py)
 
@@ -88,6 +87,11 @@ function(CreatePybind11Module)
   )
 
   set_property(TARGET ${CREATE_PYTHON_BINDINGS_TARGET} PROPERTY FOLDER "Python/Generator")
+
+  add_custom_command(TARGET ${CREATE_PYTHON_BINDINGS_TARGET}
+    PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${ARGS_PYTHON_OUTPUT_DIR}
+  )
 
   pybind11_add_module(${ARGS_MODULE_NAME}
     ${PYTHON_MODULE_SOURCE_FILE}
@@ -135,7 +139,7 @@ function(CreatePybind11Plugin)
     FILE_LIST_PATH "${SIMPLProj_BINARY_DIR}/${ARGS_PLUGIN_NAME}PublicFilters.txt"
     SOURCE_DIR "${${ARGS_PLUGIN_NAME}_SOURCE_DIR}/${ARGS_PLUGIN_NAME}Filters"
     INCLUDE_DIR "${${ARGS_PLUGIN_NAME}_SOURCE_DIR}"
-    PYTHON_OUTPUT_DIR "${SIMPLProj_BINARY_DIR}/Wrapping/dream3d"
+    PYTHON_OUTPUT_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/$<CONFIG>"
     HEADER_PATH ${ARGS_HEADER_PATH}
     BODY_PATH ${ARGS_BODY_PATH}
     LINK_LIBRARIES ${ARGS_PLUGIN_TARGET}
@@ -152,9 +156,6 @@ function(CreatePythonTests)
 
   set(TESTS_PYTHONPATH
     "$<TARGET_FILE_DIR:simpl>"
-    "${SIMPLProj_SOURCE_DIR}/Wrapping/Python/SIMPL"
-    "${SIMPLProj_BINARY_DIR}/Wrapping/dream3d"
-    "${SIMPLProj_BINARY_DIR}/Wrapping/dream3d/$<CONFIG>"
   )
 
   foreach(test ${ARGS_TEST_NAMES})
