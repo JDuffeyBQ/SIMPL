@@ -516,12 +516,16 @@ if(SIMPL_ENABLE_PYTHON)
     INCLUDE_DIRS ${SIMPLProj_SOURCE_DIR}/Wrapping/Python
   )
 
-  add_custom_command(TARGET "simpl"
-    PRE_BUILD
+  add_custom_target(CopyPythonSupport ALL
     COMMAND ${CMAKE_COMMAND} -E copy
       ${SIMPLProj_SOURCE_DIR}/Wrapping/Python/SIMPL/simpl_helpers.py
-      $<TARGET_FILE_DIR:simpl>
+      "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/$<${_isMultiConfig}:$<CONFIG>>"
+    COMMENT "Copying simpl_helpers.py to binary directory"
   )
+
+  add_dependencies(simpl CopyPythonSupport)
+
+  set_property(TARGET CopyPythonSupport PROPERTY FOLDER "ZZ_COPY_FILES")
 
   if(SIMPL_BUILD_TESTING)
     file(READ ${SIMPLProj_SOURCE_DIR}/Wrapping/Python/SIMPL/simpl_test_dirs.in.py SIMPL_TEST_DIRS_FILE)
