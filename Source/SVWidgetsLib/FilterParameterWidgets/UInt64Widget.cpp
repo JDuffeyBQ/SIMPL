@@ -90,7 +90,7 @@ void UInt64Widget::setupGui()
 // -----------------------------------------------------------------------------
 void UInt64Widget::widgetChanged(const QString& text)
 {
-  emit parametersChanged();
+  Q_EMIT parametersChanged();
 }
 
 // -----------------------------------------------------------------------------
