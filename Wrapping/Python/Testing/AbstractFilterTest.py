@@ -1,4 +1,4 @@
-import simpl
+from dream3d import simpl
 
 def BasicTest():
     filter = simpl.EmptyFilter()

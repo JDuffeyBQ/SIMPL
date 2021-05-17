@@ -1,10 +1,9 @@
 import numpy as np
 
-import simpl
-import simplpy
+from dream3d import simpl
+from dream3d import orientationanalysispy as orient
 import simpl_helpers as sh
 import simpl_test_dirs as sd
-import orientationanalysispy as orient
 
 def Test1():
   '''

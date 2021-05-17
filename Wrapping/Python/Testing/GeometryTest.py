@@ -1,9 +1,4 @@
-import numpy as np
-
-import simpl
-import simplpy
-import simpl_helpers as sh
-import simpl_test_dirs as sd
+from dream3d import simpl
 
 def GeometryTest():
   imageGeom = simpl.ImageGeom.CreateGeometry('ImageGeometry')

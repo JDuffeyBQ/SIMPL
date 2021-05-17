@@ -1,7 +1,6 @@
 import numpy as np
 
-import simpl
-import simplpy
+from dream3d import simpl
 import simpl_helpers as sh
 import simpl_test_dirs as sd
 

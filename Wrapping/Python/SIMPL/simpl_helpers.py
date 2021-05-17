@@ -1,5 +1,5 @@
-import simpl
-import simplpy as d3d
+from dream3d import simpl
+from dream3d import simplpy as d3d
 
 import numpy as np
 

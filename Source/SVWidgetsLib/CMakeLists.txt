@@ -180,6 +180,10 @@ if(DREAM3D_ANACONDA)
   target_compile_definitions(SVWidgetsLib PRIVATE DREAM3D_ANACONDA)
 endif()
 
+if(DREAM3D_ANACONDA_INSTALL)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE DREAM3D_ANACONDA_INSTALL)
+endif()
+
 LibraryProperties( SVWidgetsLib ${EXE_DEBUG_EXTENSION})
 target_link_libraries(SVWidgetsLib ${SVWidgetsLib_LINK_LIBRARIES} QtWebAppLib)
 

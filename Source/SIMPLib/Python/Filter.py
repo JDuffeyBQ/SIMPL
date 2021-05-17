@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Tuple, Union
 
-from simpl import DataContainerArray, FilterDelegateCpp, FilterParameter
+from . import simpl
 
 # can use typing.Protocol in 3.8
 class FilterDelegatePy:
@@ -52,18 +52,18 @@ class Filter(ABC):
     raise NotImplementedError
 
   @abstractmethod
-  def setup_parameters(self) -> List[FilterParameter]:
+  def setup_parameters(self) -> List[simpl.FilterParameter]:
     raise NotImplementedError
 
   @abstractmethod
-  def data_check(self, dca: DataContainerArray, delegate: Union[FilterDelegateCpp, FilterDelegatePy] = FilterDelegatePy()) -> Tuple[int, str]:
+  def data_check(self, dca: simpl.DataContainerArray, delegate: Union[simpl.FilterDelegateCpp, FilterDelegatePy] = FilterDelegatePy()) -> Tuple[int, str]:
     raise NotImplementedError
 
   @abstractmethod
-  def _execute_impl(self, dca: DataContainerArray, delegate: Union[FilterDelegateCpp, FilterDelegatePy] = FilterDelegatePy()) -> Tuple[int, str]:
+  def _execute_impl(self, dca: simpl.DataContainerArray, delegate: Union[simpl.FilterDelegateCpp, FilterDelegatePy] = FilterDelegatePy()) -> Tuple[int, str]:
     raise NotImplementedError
 
-  def execute(self, dca: DataContainerArray, delegate: Union[FilterDelegateCpp, FilterDelegatePy] = FilterDelegatePy()) -> Tuple[int, str]:
+  def execute(self, dca: simpl.DataContainerArray, delegate: Union[simpl.FilterDelegateCpp, FilterDelegatePy] = FilterDelegatePy()) -> Tuple[int, str]:
     data_check_result = self.data_check(dca, delegate)
     if data_check_result[0] < 0:
       return data_check_result

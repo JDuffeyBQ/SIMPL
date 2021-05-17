@@ -211,24 +211,30 @@ if(SIMPL_EMBED_PYTHON)
   if(NOT DREAM3D_ANACONDA)
     add_custom_command(TARGET ${PROJECT_NAME}
       PRE_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy ${SIMPLib_SOURCE_DIR}/Python/Filter.py $<TARGET_FILE_DIR:${PROJECT_NAME}>
       COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}>/Python
     )
   endif()
 
-  if(DREAM3D_ANACONDA)
-    configure_file(${SIMPLib_SOURCE_DIR}/Python/Filter.py.in ${DREAM3D_PYTHON_PACKAGE_DIR}/Filter.py COPYONLY)
-    file(APPEND ${DREAM3D_INIT_PY_FILE} "from . import Filter\n")
-  endif()
+  set(DREAM3D_INIT_PY_FILE ${PROJECT_BINARY_DIR}/__init__.py)
+  file(REMOVE ${DREAM3D_INIT_PY_FILE})
+  file(TOUCH ${DREAM3D_INIT_PY_FILE})
 
-  if(NOT DREAM3D_ANACONDA)
-    install(DIRECTORY DESTINATION "Python")
-    install(FILES ${SIMPLib_SOURCE_DIR}/Python/Filter.py DESTINATION ".")
-  endif()
+  file(GENERATE OUTPUT "$<TARGET_FILE_DIR:simpl>/__init__.py"
+    INPUT ${DREAM3D_INIT_PY_FILE}
+  )
+
+  file(GENERATE OUTPUT "$<TARGET_FILE_DIR:simpl>/Filter.py"
+    INPUT ${SIMPLib_SOURCE_DIR}/Python/Filter.py
+  )
+  file(APPEND ${DREAM3D_INIT_PY_FILE} "from . import Filter\n")
 endif()
 
 if(DREAM3D_ANACONDA)
   target_compile_definitions(${PROJECT_NAME} PRIVATE DREAM3D_ANACONDA)
+endif()
+
+if(DREAM3D_ANACONDA_INSTALL)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE DREAM3D_ANACONDA_INSTALL)
 endif()
 
 # Add H5Support

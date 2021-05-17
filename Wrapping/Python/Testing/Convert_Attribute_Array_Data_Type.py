@@ -2,12 +2,10 @@
 Creates a Int32 array and then converts it to UInt8
 '''
 
-import simpl
-import simplpy
+from dream3d import simpl
+from dream3d import simplpy
 import simpl_helpers as sh
 import simpl_test_dirs as sd
-
-import datetime
 
 def convert_data_test():
     # Create Data Container Array

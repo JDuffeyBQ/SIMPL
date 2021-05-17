@@ -1,7 +1,7 @@
 # Pipeline: Import Ascii Data Array Test
 
-import simpl
-import simplpy
+from dream3d import simpl
+from dream3d import simplpy
 import simpl_helpers as sh
 import simpl_test_dirs as sd
 

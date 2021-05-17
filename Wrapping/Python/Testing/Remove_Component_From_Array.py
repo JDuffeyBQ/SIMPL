@@ -1,8 +1,8 @@
 # Pipeline : Remove Component From Array Filter Test
 # Based on (01) SmallIN100 Quick Mesh (from EBSD Surface Meshing)
 
-import simpl
-import simplpy
+from dream3d import simpl
+from dream3d import simplpy
 import simpl_helpers as sh
 import simpl_test_dirs as sd
 

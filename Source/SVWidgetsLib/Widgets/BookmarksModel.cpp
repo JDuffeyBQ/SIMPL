@@ -824,7 +824,7 @@ QDir BookmarksModel::findPipelinesDirectory()
 
   QString appPath = QCoreApplication::applicationDirPath();
   QDir pipelinesDir = QDir(appPath);
-#if defined(DREAM3D_ANACONDA)
+#if defined(DREAM3D_ANACONDA_INSTALL)
   pipelinesDir.cd(QString("../share/%1").arg(QCoreApplication::applicationName()));
 #else
 #if defined(Q_OS_WIN)

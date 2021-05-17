@@ -15,6 +15,7 @@ function(AddPythonTest)
     if(WIN32)
       add_test(NAME ${ARGS_NAME}
         COMMAND ${SIMPLProj_SOURCE_DIR}/Wrapping/Python/Binding/anaconda_test.bat
+        WORKING_DIRECTORY "$<TARGET_FILE_DIR:simpl>/.."
       )
 
       set_property(TEST ${ARGS_NAME}
@@ -27,6 +28,7 @@ function(AddPythonTest)
     else()
       add_test(NAME ${ARGS_NAME}
         COMMAND ${SIMPLProj_SOURCE_DIR}/Wrapping/Python/Binding/anaconda_test.sh
+        WORKING_DIRECTORY "$<TARGET_FILE_DIR:simpl>/.."
       )
 
       set_property(TEST ${ARGS_NAME}
@@ -40,6 +42,7 @@ function(AddPythonTest)
   else()
     add_test(NAME ${ARGS_NAME}
       COMMAND ${PYTHON_EXECUTABLE} ${ARGS_FILE}
+      WORKING_DIRECTORY "$<TARGET_FILE_DIR:simpl>/.."
     )
   endif()
 
@@ -71,7 +74,7 @@ endfunction()
 #-------------------------------------------------------------------------------
 function(CreatePybind11Module)
   set(options PLUGIN)
-  set(oneValueArgs MODULE_NAME OUTPUT_DIR FILE_LIST_PATH SOURCE_DIR HEADER_PATH BODY_PATH BODY_TOP_PATH INCLUDE_DIR PYTHON_OUTPUT_DIR)
+  set(oneValueArgs MODULE_NAME OUTPUT_DIR FILE_LIST_PATH SOURCE_DIR HEADER_PATH BODY_PATH BODY_TOP_PATH INCLUDE_DIR PYTHON_OUTPUT_DIR PYTHON_TEST_OUTPUT_DIR)
   set(multiValueArgs LINK_LIBRARIES INCLUDE_DIRS)
   cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -91,21 +94,18 @@ function(CreatePybind11Module)
 
   set(CREATE_PYTHON_BINDINGS_TARGET ${MODULE_NAME_lower}CreatePythonBindings)
   set(PYTHON_MODULE_SOURCE_FILE ${ARGS_OUTPUT_DIR}/py_${MODULE_NAME_lower}.cpp)
-  set(PYTHON_UNIT_TEST_FILE ${ARGS_PYTHON_OUTPUT_DIR}/${MODULE_NAME_lower}_UnitTest.py)
+  set(PYTHON_UNIT_TEST_FILE ${ARGS_PYTHON_TEST_OUTPUT_DIR}/${MODULE_NAME_lower}_UnitTest.py)
 
   file(MAKE_DIRECTORY ${ARGS_OUTPUT_DIR})
 
   set(PY_GENERATOR ${SIMPLProj_SOURCE_DIR}/Wrapping/Python/Binding/generate_python_bindings.py)
 
   set(NO_TESTS_ARG "")
-  if(DREAM3D_ANACONDA)
+  if(NOT SIMPL_BUILD_TESTING)
     set(NO_TESTS_ARG "--no_tests")
   endif()
 
-  set(RELATIVE_IMPORTS_ARGS "")
-  if(DREAM3D_ANACONDA)
-    set(RELATIVE_IMPORTS_ARGS "--relative_imports")
-  endif()
+  set(RELATIVE_IMPORTS_ARGS "--relative_imports")
 
   add_custom_target(${CREATE_PYTHON_BINDINGS_TARGET} ALL
       COMMAND ${PYTHON_EXECUTABLE} ${PY_GENERATOR}
@@ -120,6 +120,7 @@ function(CreatePybind11Module)
       "--body_path=${ARGS_BODY_PATH}"
       "--body_top_path=${ARGS_BODY_TOP_PATH}"
       "--plugin_name=${ARGS_MODULE_NAME}"
+      "--python_test_output_dir=${ARGS_PYTHON_TEST_OUTPUT_DIR}"
       "${NO_TESTS_ARG}"
       "${RELATIVE_IMPORTS_ARGS}"
       COMMENT "${ARGS_MODULE_NAME}: Generating Python bindings"
@@ -146,6 +147,13 @@ function(CreatePybind11Module)
       SKIP_AUTOMOC ON
   )
 
+  set_target_properties(${MODULE_NAME_lower}
+    PROPERTIES
+      ARCHIVE_OUTPUT_DIRECTORY "$<TARGET_FILE_DIR:SIMPLib>/dream3d"
+      LIBRARY_OUTPUT_DIRECTORY "$<TARGET_FILE_DIR:SIMPLib>/dream3d"
+      RUNTIME_OUTPUT_DIRECTORY "$<TARGET_FILE_DIR:SIMPLib>/dream3d"
+  )
+
   add_dependencies(${MODULE_NAME_lower} ${CREATE_PYTHON_BINDINGS_TARGET})
 
   target_link_libraries(${MODULE_NAME_lower}
@@ -158,14 +166,16 @@ function(CreatePybind11Module)
       ${ARGS_INCLUDE_DIRS}
   )
 
-  set(TESTS_PYTHONPATH
-    "$<TARGET_FILE_DIR:simpl>"
-  )
+  if(SIMPL_BUILD_TESTING)
+    set(TESTS_PYTHONPATH
+      "$<TARGET_FILE_DIR:simpl>/.."
+    )
 
-  AddPythonTest(NAME PY_${MODULE_NAME_lower}_UnitTest
-    FILE ${PYTHON_UNIT_TEST_FILE}
-    PYTHONPATH ${TESTS_PYTHONPATH}
-  )
+    AddPythonTest(NAME PY_${MODULE_NAME_lower}_UnitTest
+      FILE ${PYTHON_UNIT_TEST_FILE}
+      PYTHONPATH ${TESTS_PYTHONPATH}
+    )
+  endif()
 
   set(install_dir ".")
   if(DREAM3D_ANACONDA)
@@ -181,7 +191,6 @@ function(CreatePybind11Module)
   if(DREAM3D_ANACONDA)
     file(APPEND ${DREAM3D_INIT_PY_FILE} "from . import ${MODULE_NAME_lower}\n")
     file(APPEND ${DREAM3D_INIT_PY_FILE} "from . import ${MODULE_NAME_lower}py\n")
-    add_dependencies(CopyPythonPackage ${MODULE_NAME_lower})
   endif()
 endfunction()
 
@@ -205,7 +214,8 @@ function(CreatePybind11Plugin)
     FILE_LIST_PATH "${SIMPLProj_BINARY_DIR}/Wrapping/${ARGS_PLUGIN_NAME}Filters.txt"
     SOURCE_DIR "${${ARGS_PLUGIN_NAME}_SOURCE_DIR}/${ARGS_PLUGIN_NAME}Filters"
     INCLUDE_DIR "${${ARGS_PLUGIN_NAME}_SOURCE_DIR}"
-    PYTHON_OUTPUT_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}$<${_isMultiConfig}:/$<CONFIG>>"
+    PYTHON_OUTPUT_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}$<${_isMultiConfig}:/$<CONFIG>>/dream3d"
+    PYTHON_TEST_OUTPUT_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}$<${_isMultiConfig}:/$<CONFIG>>"
     HEADER_PATH ${ARGS_HEADER_PATH}
     BODY_PATH ${ARGS_BODY_PATH}
     BODY_TOP_PATH ${ARGS_BODY_TOP_PATH}
@@ -229,7 +239,7 @@ function(CreatePythonTests)
   cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   set(TESTS_PYTHONPATH
-    "$<TARGET_FILE_DIR:simpl>"
+    "$<TARGET_FILE_DIR:simpl>/.."
   )
 
   foreach(test ${ARGS_TEST_NAMES})

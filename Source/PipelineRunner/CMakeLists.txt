@@ -71,4 +71,8 @@ if(SIMPL_Group_PLUGIN AND SIMPL_Group_BASE AND SIMPL_Group_FILTERS)
   if(DREAM3D_ANACONDA)
     target_compile_definitions(PipelineRunner PRIVATE DREAM3D_ANACONDA)
   endif()
+
+  if(DREAM3D_ANACONDA_INSTALL)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE DREAM3D_ANACONDA_INSTALL)
+  endif()
 endif()

@@ -1,10 +1,8 @@
 # Pipeline : Rename Attribute Array Filter Test
 # Based on (01) SmallIN100 Quick Mesh (from EBSD Surface Meshing)
 
-import simpl
-import simplpy
-import simpl_helpers as sh
-import simpl_test_dirs as sd
+from dream3d import simpl
+from dream3d import simplpy
 
 def rename_array_test():
     # Create Data Container Array

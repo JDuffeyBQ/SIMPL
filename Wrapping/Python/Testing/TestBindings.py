@@ -1,7 +1,5 @@
 # These are the simpl_py python modules
-import simpl
-import simplpy
-import simpl_helpers as sh
+from dream3d import simpl
 import simpl_test_dirs as sd
 
 def PipelineTest():

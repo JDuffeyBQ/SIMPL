@@ -557,33 +557,25 @@ if(SIMPL_WRAP_PYTHON)
     HEADER_PATH "${SIMPLProj_SOURCE_DIR}/Wrapping/Python/Binding/pySIMPLHeader.cpp"
     BODY_PATH "${SIMPLProj_SOURCE_DIR}/Wrapping/Python/Binding/pySIMPLBody.cpp"
     BODY_TOP_PATH "${SIMPLProj_SOURCE_DIR}/Wrapping/Python/Binding/pySIMPLBodyTop.cpp"
-    PYTHON_OUTPUT_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}$<${_isMultiConfig}:/$<CONFIG>>"
+    PYTHON_OUTPUT_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}$<${_isMultiConfig}:/$<CONFIG>>/dream3d"
+    PYTHON_TEST_OUTPUT_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}$<${_isMultiConfig}:/$<CONFIG>>"
     LINK_LIBRARIES SIMPLib
     INCLUDE_DIRS ${SIMPLProj_SOURCE_DIR}/Wrapping/Python
   )
 
-  if(NOT DREAM3D_ANACONDA)
-    add_custom_target(CopyPythonSupport ALL
-      COMMAND ${CMAKE_COMMAND} -E copy
-        ${SIMPLProj_SOURCE_DIR}/Wrapping/Python/SIMPL/simpl_helpers.py
-        "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}$<${_isMultiConfig}:/$<CONFIG>>"
-      COMMENT "Copying simpl_helpers.py to binary directory"
-    )
-
-    add_dependencies(simpl CopyPythonSupport)
-
-    set_property(TARGET CopyPythonSupport PROPERTY FOLDER "ZZ_COPY_FILES")
-  endif()
+  file(GENERATE OUTPUT "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}$<${_isMultiConfig}:/$<CONFIG>>/simpl_helpers.py"
+    INPUT ${SIMPLProj_SOURCE_DIR}/Wrapping/Python/SIMPL/simpl_helpers.py
+  )
 
   if(SIMPL_BUILD_TESTING)
     file(READ ${SIMPLProj_SOURCE_DIR}/Wrapping/Python/SIMPL/simpl_test_dirs.in.py SIMPL_TEST_DIRS_FILE)
 
-    string(REPLACE "\${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" $<TARGET_FILE_DIR:simpl> SIMPL_TEST_DIRS_FILE ${SIMPL_TEST_DIRS_FILE})
+    string(REPLACE "\${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" $<TARGET_FILE_DIR:simpl>/.. SIMPL_TEST_DIRS_FILE ${SIMPL_TEST_DIRS_FILE})
     string(REPLACE "\${SIMPLProj_BINARY_DIR}" ${SIMPLProj_BINARY_DIR} SIMPL_TEST_DIRS_FILE ${SIMPL_TEST_DIRS_FILE})
     string(REPLACE "\${DREAM3D_DATA_DIR}" ${DREAM3D_DATA_DIR} SIMPL_TEST_DIRS_FILE ${SIMPL_TEST_DIRS_FILE})
 
     file(GENERATE
-      OUTPUT "$<TARGET_FILE_DIR:simpl>/simpl_test_dirs.py"
+      OUTPUT "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}$<${_isMultiConfig}:/$<CONFIG>>/simpl_test_dirs.py"
       CONTENT ${SIMPL_TEST_DIRS_FILE}
     )
 
