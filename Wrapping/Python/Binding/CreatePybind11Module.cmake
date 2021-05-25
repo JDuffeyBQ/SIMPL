@@ -188,10 +188,8 @@ function(CreatePybind11Module)
     )
   endif()
 
-  if(DREAM3D_ANACONDA)
-    file(APPEND ${DREAM3D_INIT_PY_FILE} "from . import ${MODULE_NAME_lower}\n")
-    file(APPEND ${DREAM3D_INIT_PY_FILE} "from . import ${MODULE_NAME_lower}py\n")
-  endif()
+  file(APPEND ${DREAM3D_INIT_PY_FILE} "from . import ${MODULE_NAME_lower}\n")
+  file(APPEND ${DREAM3D_INIT_PY_FILE} "from . import ${MODULE_NAME_lower}py\n")
 endfunction()
 
 #-------------------------------------------------------------------------------

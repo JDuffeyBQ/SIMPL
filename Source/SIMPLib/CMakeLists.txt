@@ -204,23 +204,24 @@ endif()
 add_library(${PROJECT_NAME} ${LIB_TYPE} ${Project_SRCS} )
 CMP_AddDefinitions(TARGET ${PROJECT_NAME})
 
-if(SIMPL_EMBED_PYTHON)
-  find_package(pybind11 2.6 REQUIRED)
-  target_link_libraries(${PROJECT_NAME} PRIVATE pybind11::embed)
-
-  if(NOT DREAM3D_ANACONDA)
-    add_custom_command(TARGET ${PROJECT_NAME}
-      PRE_BUILD
-      COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}>/Python
-    )
-  endif()
-
-  set(DREAM3D_INIT_PY_FILE ${PROJECT_BINARY_DIR}/__init__.py)
+if(SIMPL_WRAP_PYTHON)
+  set(DREAM3D_INIT_PY_FILE ${PROJECT_BINARY_DIR}/__init__.py CACHE STRING "")
+  mark_as_advanced(DREAM3D_INIT_PY_FILE)
   file(REMOVE ${DREAM3D_INIT_PY_FILE})
   file(TOUCH ${DREAM3D_INIT_PY_FILE})
 
   file(GENERATE OUTPUT "$<TARGET_FILE_DIR:simpl>/__init__.py"
     INPUT ${DREAM3D_INIT_PY_FILE}
+  )
+endif()
+
+if(SIMPL_EMBED_PYTHON)
+  find_package(pybind11 2.6 REQUIRED)
+  target_link_libraries(${PROJECT_NAME} PRIVATE pybind11::embed)
+
+  add_custom_command(TARGET ${PROJECT_NAME}
+    PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}>/Python
   )
 
   file(GENERATE OUTPUT "$<TARGET_FILE_DIR:simpl>/Filter.py"

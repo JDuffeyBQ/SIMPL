@@ -1,0 +1,20 @@
+import os
+import sys
+
+from pathlib import Path
+
+dll_dir = None
+
+if sys.platform == 'win32' and sys.version_info.major == 3 and sys.version_info.minor >= 8:
+  dll_dir = os.add_dll_directory(str(Path(__file__).parents[1].absolute()))
+
+try:
+@DREAM3D_PYTHON_IMPORTS@
+finally:
+  if dll_dir:
+    dll_dir.close()
+
+del dll_dir
+del Path
+del os
+del sys
